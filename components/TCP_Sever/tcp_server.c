@@ -8,7 +8,7 @@
 */
 #include "tcp_server.h"
 
-static const char *TAG1 = "tcp_server";
+static const char *TAG = "tcp_server";
 int sock;
 
 static void do_retransmit(const int sock)
@@ -19,12 +19,12 @@ static void do_retransmit(const int sock)
     do {
         len = recv(sock, rx_buffer, sizeof(rx_buffer) - 1, 0);
         if (len < 0) {
-            ESP_LOGE(TAG1, "Error occurred during receiving: errno %d", errno);
+            ESP_LOGE(TAG, "Error occurred during receiving: errno %d", errno);
         } else if (len == 0) {
-            ESP_LOGW(TAG1, "Connection closed");
+            ESP_LOGW(TAG, "Connection closed");
         } else {
             rx_buffer[len] = 0; // Null-terminate whatever is received and treat it like a string
-            ESP_LOGI(TAG1, "Received %d bytes: %s", len, rx_buffer);
+            ESP_LOGI(TAG, "Received %d bytes: %s", len, rx_buffer);
 
             // send() can return less bytes than supplied length.
             // Walk-around for robust implementation.
@@ -32,7 +32,7 @@ static void do_retransmit(const int sock)
             while (to_write > 0) {
                 int written = send(sock, rx_buffer + (len - to_write), to_write, 0);
                 if (written < 0) {
-                    ESP_LOGE(TAG1, "Error occurred during sending: errno %d", errno);
+                    ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
                     // Failed to retransmit, giving up
                     return;
                 }
@@ -63,37 +63,37 @@ void tcp_server_init()
 	
 	int listen_sock = socket(addr_family, SOCK_STREAM, ip_protocol);
 	if (listen_sock < 0) {
-		ESP_LOGE(TAG1, "Unable to create socket: errno %d", errno);
+		ESP_LOGE(TAG, "Unable to create socket: errno %d", errno);
 		return;
 	}
 	int opt = 1;
 	setsockopt(listen_sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 	
 	
-	ESP_LOGI(TAG1, "Socket created");
+	ESP_LOGI(TAG, "Socket created");
 	
 	int err = bind(listen_sock, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
 	if (err != 0){
 		
-		ESP_LOGE(TAG1, "Socket unable to bind: errno %d", errno);
-		ESP_LOGE(TAG1, "IPPROTO: %d", addr_family);
+		ESP_LOGE(TAG, "Socket unable to bind: errno %d", errno);
+		ESP_LOGE(TAG, "IPPROTO: %d", addr_family);
 		return;
 	}
-	ESP_LOGI(TAG1, "Socket bound, port %d", PORT);
+	ESP_LOGI(TAG, "Socket bound, port %d", PORT);
 	
 	err = listen(listen_sock, 1);
 	if (err != 0) {
-		ESP_LOGE(TAG1, "Error occurred during listen: errno %d", errno);
+		ESP_LOGE(TAG, "Error occurred during listen: errno %d", errno);
 		return;
 	}
 	
-	ESP_LOGI(TAG1, "Socket listening");
+	ESP_LOGI(TAG, "Socket listening");
 	
 	struct sockaddr_storage source_addr; // Large enough for both IPv4 or IPv6
 	socklen_t addr_len = sizeof(source_addr);
 	sock = accept(listen_sock, (struct sockaddr *)&source_addr, &addr_len);
 	if (sock < 0) {
-		ESP_LOGE(TAG1, "Unable to accept connection: errno %d", errno);
+		ESP_LOGE(TAG, "Unable to accept connection: errno %d", errno);
 		return;
 	}
 	
@@ -108,7 +108,7 @@ void tcp_server_init()
 		inet_ntoa_r(((struct sockaddr_in *)&source_addr)->sin_addr, addr_str, sizeof(addr_str) - 1);
 	}
 	
-	ESP_LOGI(TAG1, "Socket accepted ip address: %s", addr_str);
+	ESP_LOGI(TAG, "Socket accepted ip address: %s", addr_str);
 	
 	//do_retransmit(sock);
 
@@ -119,5 +119,12 @@ void tcp_server_init()
 void TCP_Send()
 {
 	vTaskDelay(200);
-	send(sock, "2", 1, 0);
+	send(sock, "222", 3, 0);
+	//len = recv(sock, rx_buffer, sizeof(rx_buffer) - 1, 0);
+	//if(len)
+	//{
+	//	send_
+	//	
+	//	
+	//}
 }
