@@ -1,3 +1,8 @@
+//-----------------------------------------------------------------------------------------------------
+//在使用前请先初始化WIFI_STA/WIFI_AP
+
+
+
 /* BSD Socket API Example
 
    This example code is in the Public Domain (or CC0 licensed, at your option.)
@@ -120,11 +125,4 @@ void TCP_Send()
 {
 	vTaskDelay(200);
 	send(sock, "222", 3, 0);
-	//len = recv(sock, rx_buffer, sizeof(rx_buffer) - 1, 0);
-	//if(len)
-	//{
-	//	send_
-	//	
-	//	
-	//}
 }

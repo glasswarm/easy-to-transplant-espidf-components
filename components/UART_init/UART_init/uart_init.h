@@ -24,4 +24,8 @@
 
 void uart_init();
 
+//写入使用, uart_write_bytes(ECHO_UART_PORT_NUM, (const char *) data, len);
+
+//读取使用，uart_read_bytes(ECHO_UART_PORT_NUM, data, (BUF_SIZE - 1), 20 / portTICK_PERIOD_MS);
+
 #endif

@@ -8,8 +8,6 @@
 */
 #include "WIFI_STA_INIT.H"
 
-
-
 /* FreeRTOS event group to signal when we are connected*/
 static EventGroupHandle_t s_wifi_event_group;
 

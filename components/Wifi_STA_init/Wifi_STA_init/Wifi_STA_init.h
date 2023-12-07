@@ -1,7 +1,6 @@
 #ifndef __WIFI_STA_INIT_H__
 #define __WIFI_STA_INIT_H__
 
-
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
