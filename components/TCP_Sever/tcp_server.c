@@ -15,37 +15,8 @@
 
 static const char *TAG = "tcp_server";
 int sock;
-
-static void do_retransmit(const int sock)
-{
-    int len;
-    char rx_buffer[128];
-
-    do {
-        len = recv(sock, rx_buffer, sizeof(rx_buffer) - 1, 0);
-        if (len < 0) {
-            ESP_LOGE(TAG, "Error occurred during receiving: errno %d", errno);
-        } else if (len == 0) {
-            ESP_LOGW(TAG, "Connection closed");
-        } else {
-            rx_buffer[len] = 0; // Null-terminate whatever is received and treat it like a string
-            ESP_LOGI(TAG, "Received %d bytes: %s", len, rx_buffer);
-
-            // send() can return less bytes than supplied length.
-            // Walk-around for robust implementation.
-            int to_write = len;
-            while (to_write > 0) {
-                int written = send(sock, rx_buffer + (len - to_write), to_write, 0);
-                if (written < 0) {
-                    ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
-                    // Failed to retransmit, giving up
-                    return;
-                }
-                to_write -= written;
-            }
-        }
-    } while (len > 0);
-}
+char rx_buffer[2048]="";
+int len;
 
 void tcp_server_init()
 {
@@ -114,9 +85,6 @@ void tcp_server_init()
 	}
 	
 	ESP_LOGI(TAG, "Socket accepted ip address: %s", addr_str);
-	
-	//do_retransmit(sock);
-
     //shutdown(sock, 0);
     //close(sock);
 }
@@ -125,4 +93,44 @@ void TCP_Send()
 {
 	vTaskDelay(200);
 	send(sock, "222", 3, 0);
+}
+
+void TCP_Recive()
+{
+	len = recv(sock, rx_buffer, sizeof(rx_buffer) - 1, 0);
+    if(len > 0)rx_buffer[len] = 0;
+	if(rx_buffer[0] == '1')
+	{
+	   //int number = atoi(rx_buffer);//整型
+	   float number = atof(rx_buffer);//浮点数
+	   ESP_LOGW(TAG, "The number is %f" ,number);
+	}
+}
+
+void TCP_Recive_Send()
+{
+    do {
+        len = recv(sock, rx_buffer, sizeof(rx_buffer) - 1, 0);
+        if (len < 0) {
+            ESP_LOGE(TAG, "Error occurred during receiving: errno %d", errno);
+        } else if (len == 0) {
+            ESP_LOGW(TAG, "Connection closed");
+        } else {
+            rx_buffer[len] = 0; // Null-terminate whatever is received and treat it like a string
+            ESP_LOGI(TAG, "Received %d bytes: %s", len, rx_buffer);
+
+            // send() can return less bytes than supplied length.
+            // Walk-around for robust implementation.
+            int to_write = len;
+            while (to_write > 0) {
+                int written = send(sock, rx_buffer + (len - to_write), to_write, 0);
+                if (written < 0) {
+                    ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+                    // Failed to retransmit, giving up
+                    return;
+                }
+                to_write -= written;
+            }
+        }
+    } while (len > 0);
 }

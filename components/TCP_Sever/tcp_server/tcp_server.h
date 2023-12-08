@@ -1,6 +1,8 @@
 #ifndef __TCP_SERVER_H__
 #define __TCP_SERVER_H__
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/param.h>
 #include "freertos/FreeRTOS.h"
@@ -24,5 +26,8 @@
 
 void tcp_server_init();
 void TCP_Send();
+void TCP_Recive();
+
+void TCP_Recive_Send();
 
 #endif

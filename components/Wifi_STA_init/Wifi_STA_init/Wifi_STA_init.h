@@ -15,8 +15,8 @@
 #include "lwip/sys.h"
 
 
-#define EXAMPLE_ESP_WIFI_SSID      "UDP_fff"
-#define EXAMPLE_ESP_WIFI_PASS      "20020410"
+#define EXAMPLE_ESP_WIFI_SSID      "ESP_STA"
+#define EXAMPLE_ESP_WIFI_PASS      "12345678"
 #define EXAMPLE_ESP_MAXIMUM_RETRY  5
 
 //#if CONFIG_ESP_WPA3_SAE_PWE_HUNT_AND_PECK
